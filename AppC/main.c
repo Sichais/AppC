@@ -110,6 +110,25 @@ void removePokemon(struct pokemon *who) {
     
     free(who);
 }
+
+double bulbTackleDamage (struct pokemon *Bulbasaur);
+double bulbLeechSeedDamage (struct pokemon *Bulbasaur);
+double bulbVineWhipDamage (struct pokemon *Bulbasaur);
+
+double charScratchDamage (struct pokemon *Charmander);
+double charEmberDamage (struct pokemon *Charmander);
+
+double squirTackleDamage (struct pokemon *Squirtle);
+double squirWaterGunDamage (struct pokemon *Squirtle);
+
+double darudeScratchDamage (struct pokemon *Sandshrew);
+double darudePoisonStingDamage (struct pokemon *Sandshrew);
+
+double vulpixTackleDamage (struct pokemon *Vulpix);
+double vulpixEmberDamage (struct pokemon *Vulpix);
+
+double machoChopKickDamage (struct pokemon *Machop);
+
 int main(int argc, const char * argv[]) {
     //TYPES, TYPES EVERYWHERE=======================
     //Normal, Fight, Fly, Poison, Ghost, Elec, Psy, Dragon, Dark, Ground, Rock, Water, Bug, Steel, Fire, Grass, Ice
@@ -220,88 +239,306 @@ int main(int argc, const char * argv[]) {
         int moveSelect;
         int itemSelect;
         int pokeSelect;
-
+        
         bool isBulb, isChar, isSquir, isDarude, isVulpix, isMacho, isDone;
-        printf("Welcome! The time is currently: %s\nOh no a wild Caterpie appeared, who do you send out?: "
-               "\n1. Bulbasaur."
-               "\n2. Charmander."
-               "\n3. Squirtle. "
-               "\n4. Sandshrew. "
-               "\n5. Vulpix. "
-               "\n6. Machop. \n Select using 1-6, please: ", ctime(&currentTime));
+        
+        printf("Welcome! The time is currently: %s\nOh no a wild Caterpie appeared!", ctime(&currentTime));
+        
+        //Enemy initalization
         struct pokemon *Caterpie = sendOut("Caterpie", &Cater, "Tackle", "String Shot", "Bug Bite", "\0", 45, 30, 35, 20, 20, 45);
-        scanf("%20d", &pokemonChoose);
-        getchar();
+        
+        //Ally initialization
+        //Bulbasaur
+        struct pokemon *Bulbasaur = sendOut("Bulbasaur", &Bulb, "Tackle", "Growl", "Leech Seed", "Vine Whip",
+                                            45, 49, 49, 65, 65, 45);
+        //Charmander
+        struct pokemon *Charmander = sendOut("Charmander", &Char, "Scratch", "Growl", "Ember", "Smokescreen",
+                                             39, 52, 43, 60, 50, 65);
+        //Squirtle
+        struct pokemon *Squirtle = sendOut("Squirtle", &Squir, "Tackle", "Tail Whip", "Water Gun", "Withdraw",
+                                           44, 48, 65, 50, 64, 43);
+        //Dudududu (Darude - Sandshrew)
+        struct pokemon *Sandshrew = sendOut("Sandshrew", &Darude, "Scratch", "Defense Curl", "Sand Attack", "Poison Sting",
+                                            50, 75, 85, 20, 30, 40);
+        //Vulpix
+        struct pokemon *Vulpix = sendOut("Vulpix", &Char, "Ember", "Tail Whip", "Roar", "Baby-Doll Eyes",
+                                         38, 41, 40, 50, 65, 65);
+        //Machop
+        struct pokemon *Machop = sendOut("Machop", &Macho, "Low Kick", "Leer", "Focus Energy", "Karate Chop",
+                                         70, 80, 50, 35, 35, 35);
+
         do {
-            switch (pokemonChoose) {
-                case 1:
-                    ++isBulb;
-                    ++isDone;
-                    break;
-                case 2:
-                    ++isChar;
-                    ++isDone;
-                    break;
-                case 3:
-                    ++isSquir;
-                    ++isDone;
-                    break;
-                case 4:
-                    ++isDarude;
-                    ++isDone;
-                    break;
-                case 5:
-                    ++isVulpix;
-                    ++isDone;
-                    break;
-                case 6:
-                    ++isMacho;
-                    ++isDone;
-                    break;
-                default:
-                    printf("Enter a number between One (1) and Six (6): ");
-                    break;
-                }
+            
         } while (!isDone); isDone = 0;
         if (isBulb != 0) {
             struct pokemon *Bulbasaur = sendOut("Bulbasaur", &Bulb, "Tackle", "Growl", "Leech Seed", "Vine Whip",
                                                 45, 49, 49, 65, 65, 45);
-            int tacklePP = 35;
-            int LSPP     = 10;
-        do {
+            
+            //TODO: Add useful PP values
+            int PP = 35;
+
+        do {//do---1
             printf("Select an Option: \n1. Fight\t\t2. Item\n3. Pokemon\t\t4. Run\n");
-            do {
-                scanf("%20d", actionChoose);
+            do {//do---2
+                scanf("%20d", &actionChoose);
                 getchar();
-                if (actionChoose == 1) {
-                    
+                
+                if (actionChoose == 1) {//if---1
+                    do {//do---3
+                        printf("1. Tackle\t\t2. Growl\n3. Leech Seed\t\t4. Vine Whip");
+                        scanf("%20d", &moveSelect);
+                        getchar();
+                    //Jesus christ I'm sorry, but IFS, IFS EVERYWHERE
+                        //Bulbasaur
+                        if (moveSelect == 1) {//if---2
+                            printf("%s used Tackle!", Bulbasaur -> pokeName);
+                            Caterpie -> HP -= 5 + (bulbAttackMod);
+                            ++isDone;
+                        } else if (moveSelect == 2) {
+                            printf("%s used Growl!\n%s had its attack lowered!", Bulbasaur -> pokeName, Caterpie -> pokeName);
+                            Caterpie -> attack -= 5;
+                            ++isDone;
+                        } else if (moveSelect == 3) {
+                            printf("%s used Leech Seed!\n%s began sapping health from %s!", Bulbasaur -> pokeName, Bulbasaur -> pokeName, Caterpie -> pokeName);
+                            Caterpie -> HP -= bulbTackleDamage(Bulbasaur);
+                            ++isDone;
+                        } else if (moveSelect == 4) {
+                            printf("%s used Vine Whip!", Bulbasaur -> pokeName);
+                            Caterpie -> HP -= bulbVineWhipDamage(Bulbasaur);
+                            ++isDone;
+                        }//if---2
+                        
+                        //Charmander
+                        if (moveSelect == 1) {//if---2
+                            
+                            printf("%s used Scratch!", Squirtle -> pokeName);
+                            
+                            ++isDone;
+                        } else if (moveSelect == 2) {
+                            
+                            ++isDone;
+                        } else if (moveSelect == 3) {
+                            
+                            ++isDone;
+                        } else if (moveSelect == 4) {
+                            
+                            ++isDone;
+                        }//if---2
+                        
+                        //Squirtle
+                        if (moveSelect == 1) {//if---2
+                            
+                            ++isDone;
+                        } else if (moveSelect == 2) {
+                            
+                            ++isDone;
+                        } else if (moveSelect == 3) {
+                            
+                            ++isDone;
+                        } else if (moveSelect == 4) {
+                            
+                            ++isDone;
+                        }//if---2
+                        
+                        //Darude
+                        if (moveSelect == 1) {//if---2
+                            
+                            ++isDone;
+                        } else if (moveSelect == 2) {
+                            
+                            ++isDone;
+                        } else if (moveSelect == 3) {
+                            
+                            ++isDone;
+                        } else if (moveSelect == 4) {
+                            
+                            ++isDone;
+                        }//if---2
+                        
+                        //Vulpix
+                        if (moveSelect == 1) {//if---2
+                            
+                            ++isDone;
+                        } else if (moveSelect == 2) {
+                            
+                            ++isDone;
+                        } else if (moveSelect == 3) {
+                            
+                            ++isDone;
+                        } else if (moveSelect == 4) {
+                            
+                            ++isDone;
+                        }//if---2
+                        
+                        //Machop
+                        if (moveSelect == 1) {//if---2
+                            
+                            ++isDone;
+                        } else if (moveSelect == 2) {
+                            
+                            ++isDone;
+                        } else if (moveSelect == 3) {
+                            
+                            ++isDone;
+                        } else if (moveSelect == 4) {
+                            
+                            ++isDone;
+                        }//if---2
+                    } while (!isDone); isDone = 0;//---3
                 } else if (actionChoose == 2) {
-                    
+                    printf("No items yet, sorry!");
+                    ++isDone;
                 } else if (actionChoose == 3) {
+                    printf("Select a pokemon to send out: \n1. Bulbasaur\n2. Charmander \n3. Squirtle \n4. Sandshrew \n5. Vulpix \n6. Machop\n");
+                    scanf("%20d", &pokemonChoose);
+                    getchar();
                     
+                    switch (pokemonChoose) {
+                        case 1:
+                            ++isBulb;
+                            ++isDone;
+                            break;
+                        case 2:
+                            ++isChar;
+                            ++isDone;
+                            break;
+                        case 3:
+                            ++isSquir;
+                            ++isDone;
+                            break;
+                        case 4:
+                            ++isDarude;
+                            ++isDone;
+                            break;
+                        case 5:
+                            ++isVulpix;
+                            ++isDone;
+                            break;
+                        case 6:
+                            ++isMacho;
+                            ++isDone;
+                            break;
+                        default:
+                            printf("Enter a number between One (1) and Six (6): ");
+                            break;
+                    }
                 } else if (actionChoose == 4) {
                     
-                }
-            } while (!isDone); --isDone;
-        } while (!isDone);
-            
-        } else if (isChar != 0) {
-            struct pokemon *Charmander = sendOut("Charmander", &Char, "Scratch", "Growl", "Ember", "Smokescreen",
-                                                 39, 52, 43, 60, 50, 65);
-        } else if (isSquir != 0) {
-            struct pokemon *Squirtle = sendOut("Squirtle", &Squir, "Tackle", "Tail Whip", "Water Gun", "Withdraw",
-                                               44, 48, 65, 50, 64, 43);
-        } else if (isDarude != 0) {
-            struct pokemon *Sandshrew = sendOut("Sandshrew", &Darude, "Scratch", "Defense Curl", "Sand Attack", "Poison Sting",
-                                                50, 75, 85, 20, 30, 40);
-        } else if (isVulpix != 0) {
-            struct pokemon *Vulpix = sendOut("Vulpix", &Char, "Ember", "Tail Whip", "Roar", "Baby-Doll Eyes",
-                                             38, 41, 40, 50, 65, 65);
-        } else if (isMacho != 0) {
-            struct pokemon *Machop = sendOut("Machop", &Macho, "Low Kick", "Leer", "Focus Energy", "Karate Chop",
-                                             70, 80, 50, 35, 35, 35);
-        }
+                }//if---1
+            } while (!isDone); isDone = 0;//---2
+        } while (!isDone);//---1
     }
     fprintf(ofp, "%s \n%s \n%d", mainSession -> userName, mainSession -> password, mainSession -> isAdmin);
     return 0;
+    }
 }
+
+double bulbTackleDamage (struct pokemon *Bulbasaur) {
+    double damage = 0.0;
+    damage = 5 + Bulbasaur -> attack * 0.1;
+    
+    return damage;
+}
+double bulbLeechSeedDamage (struct pokemon *Bulbasaur) {
+    double damage = 0.0;
+    damage = 4 + (2 * Bulbasaur -> spAttack * 0.1);
+    
+    return damage;
+}
+double bulbVineWhipDamage (struct pokemon *Bulbasaur) {
+    double damage = 0.0;
+    damage = 5 + (2 * Bulbasaur -> attack * 0.1);
+    
+    return damage;
+}
+
+
+double charScratchDamage (struct pokemon *Charmander) {
+    double damage = 0.0;
+    damage = 5 + Charmander -> attack * 0.1;
+    
+    return damage;
+}
+double charEmberDamage (struct pokemon *Charmander) {
+    double damage = 0.0;
+    damage = 5 + (2 * Charmander -> spAttack * 0.1);
+    
+    return damage;
+}
+
+
+double squirTackleDamage (struct pokemon *Squirtle) {
+    double damage = 0.0;
+    damage = 5 + Squirtle -> attack * 0.1;
+    
+    return damage;
+}
+double squirWaterGunDamage (struct pokemon *Squirtle) {
+    double damage = 0.0;
+    damage = 5 + (2 * Squirtle -> spAttack * 0.1);
+    
+    return damage;
+}
+
+
+double darudeScratchDamage (struct pokemon *Sandshrew) {
+    double damage = 0.0;
+    damage = 5 + Sandshrew -> attack * 0.1;
+    
+    return damage;
+}
+double darudePoisonStingDamage (struct pokemon *Sandshrew) {
+    double damage = 0.0;
+    damage = 2 + Sandshrew -> attack * 0.1;
+    
+    return damage;
+}
+
+
+double vulpixTackleDamage (struct pokemon *Vulpix) {
+    double damage = 0.0;
+    damage = 5 + Vulpix -> attack * 0.1;
+    
+    return damage;
+}
+double vulpixEmberDamage (struct pokemon *Vulpix) {
+    double damage = 0.0;
+    damage = 5 + (2 * Vulpix -> spAttack * 0.1);
+    
+    return damage;
+}
+
+
+double machoChopKickDamage (struct pokemon *Machop) {
+    double damage = 0.0;
+    damage = 5 + (2 * Machop -> attack * 0.1);
+    
+    return damage;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
